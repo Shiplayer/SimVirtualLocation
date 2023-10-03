@@ -122,7 +122,7 @@ class LocationSocketServer : NSObject, ObservableObject {
     }
     
     func installMockApp() {
-        let apkPath = Bundle.main.url(forResource: "SimVirtualLocationWithSocket.apk", withExtension: "apk")!.path
+        let apkPath = Bundle.main.url(forResource: "SimVirtualLocationWithSocket", withExtension: "apk")!.path
         let args = ["install", "-r", "-g", apkPath]
         locationController.executeAdbCommand(args: args, successMessage: "Mock Location App installed")
     }
