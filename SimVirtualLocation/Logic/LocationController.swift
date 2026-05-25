@@ -56,6 +56,13 @@ class LocationController: NSObject, ObservableObject, MKMapViewDelegate, CLLocat
     @Published var socketPanelType = 0
 
     @Published var timeScale: Double = 0.5
+    @Published var favoriteRoutes: [FavoriteRoute] = []
+    @Published var showSaveRouteDialog: Bool = false
+    
+    var canSaveCurrentRoute: Bool {
+        return annotations.count == 2 && favoriteRoutes.count < 5
+    }
+    
     lazy var locationSocketServer: LocationSocketServer = {
             return LocationSocketServer(locationController: self)
         }()
@@ -104,6 +111,8 @@ class LocationController: NSObject, ObservableObject, MKMapViewDelegate, CLLocat
         adbPath = defaults.string(forKey: "adb_path") ?? ""
         adbDeviceId = defaults.string(forKey: "adb_device_id") ?? ""
         isEmulator = defaults.bool(forKey: "is_emulator")
+        
+        loadFavoriteRoutes()
     }
 
     // MARK: - Public
@@ -342,6 +351,23 @@ class LocationController: NSObject, ObservableObject, MKMapViewDelegate, CLLocat
         
         mapView.mkMapView.showsUserLocation = true
     }
+  
+  func selectADB() {
+    let openPanel = NSOpenPanel()
+    openPanel.prompt = "Select File"
+    openPanel.allowsMultipleSelection = false
+    openPanel.canChooseDirectories = false
+    openPanel.canCreateDirectories = false
+    openPanel.canChooseFiles = true
+
+    openPanel.begin { (result) in
+        if result == .OK, let selectedPath = openPanel.url {
+          self.adbPath = selectedPath.path
+            print("Selected file path: \(selectedPath.path)")
+        }
+    }
+
+  }
     
     func prepareEmulator() {
         if adbDeviceId.isEmpty {
@@ -479,9 +505,9 @@ class LocationController: NSObject, ObservableObject, MKMapViewDelegate, CLLocat
         
         var path = adbPath
         if adbPath.isEmpty {
-            if let adbPath = runShellCommand("which adb")?.trimmingCharacters(in: .whitespacesAndNewlines) {
+            if let adbPath = runShellCommand("which adb", nil)?.trimmingCharacters(in: .whitespacesAndNewlines) {
                 let adbCommand = "\(adbPath) devices"
-                if let result = runShellCommand(adbCommand) {
+                if let result = runShellCommand(adbCommand, nil) {
                     print("Result: \(result)")
                     path = result
                 } else {
@@ -509,6 +535,8 @@ class LocationController: NSObject, ObservableObject, MKMapViewDelegate, CLLocat
             try task.run()
             task.waitUntilExit()
         } catch {
+          print("error in run task")
+          print(error)
             showAlert(error.localizedDescription)
             return
         }
@@ -517,16 +545,25 @@ class LocationController: NSObject, ObservableObject, MKMapViewDelegate, CLLocat
         let error = String(decoding: errorData, as: UTF8.self)
 
         if !error.isEmpty {
+          print("error if empty")
+          print(error)
             showAlert(error)
         } else if let successMessage = successMessage {
             showAlert(successMessage)
         }
     }
     
-    func runShellCommand(_ command: String) -> String? {
+    func runAdbShellCommand(_ command: String) -> String? {
+        return runShellCommand(command, URL(string: "file://\(adbPath)"))
+    }
+    
+    func runShellCommand(_ command: String, _ executableURL: URL?) -> String? {
         let process = Process()
         let pipe = Pipe()
 
+        if executableURL != nil {
+            process.executableURL = executableURL
+        }
         process.standardOutput = pipe
         process.standardError = pipe
         process.arguments = ["-c", command]
@@ -673,6 +710,84 @@ class LocationController: NSObject, ObservableObject, MKMapViewDelegate, CLLocat
             self.alertText = text
             self.showingAlert = true
             self.isSimulating = false
+        }
+    }
+    
+    // MARK: - Favorite Routes
+    
+    func saveCurrentRoute(name: String) {
+        guard annotations.count == 2 else {
+            showAlert("Для сохранения маршрута необходимо выбрать две точки")
+            return
+        }
+        
+        guard favoriteRoutes.count < 5 else {
+            showAlert("Максимальное количество избранных маршрутов: 5")
+            return
+        }
+        
+        let startPoint = annotations[0].coordinate
+        let endPoint = annotations[1].coordinate
+        
+        let favoriteRoute = FavoriteRoute(
+            name: name,
+            startPoint: startPoint,
+            endPoint: endPoint
+        )
+        
+        favoriteRoutes.append(favoriteRoute)
+        saveFavoriteRoutes()
+        
+        showAlert("Маршрут '\(name)' сохранен в избранные")
+    }
+    
+    func loadFavoriteRoute(at index: Int) {
+        guard index < favoriteRoutes.count else { return }
+        
+        let route = favoriteRoutes[index]
+        
+        // Очистить текущие аннотации
+        mapView.mkMapView.removeAnnotations(annotations)
+        annotations = []
+        
+        // Создать новые аннотации
+        let startAnnotation = MKPointAnnotation()
+        startAnnotation.coordinate = route.startPoint
+        startAnnotation.title = "A"
+        
+        let endAnnotation = MKPointAnnotation()
+        endAnnotation.coordinate = route.endPoint
+        endAnnotation.title = "B"
+        
+        annotations = [startAnnotation, endAnnotation]
+        mapView.mkMapView.addAnnotations(annotations)
+        
+        // Создать маршрут
+        makeRoute()
+        
+        showAlert("Маршрут '\(route.name)' загружен")
+    }
+    
+    func removeFavoriteRoute(at index: Int) {
+        guard index < favoriteRoutes.count else { return }
+        
+        let route = favoriteRoutes[index]
+        favoriteRoutes.remove(at: index)
+        saveFavoriteRoutes()
+        
+        showAlert("Маршрут '\(route.name)' удален из избранных")
+    }
+    
+    private func loadFavoriteRoutes() {
+        if let data = defaults.data(forKey: "favorite_routes"),
+           let routes = try? JSONDecoder().decode([FavoriteRoute].self, from: data) {
+            favoriteRoutes = routes
+        }
+    }
+    
+    private func saveFavoriteRoutes() {
+        if let data = try? JSONEncoder().encode(favoriteRoutes) {
+            defaults.set(data, forKey: "favorite_routes")
         }
     }
 }

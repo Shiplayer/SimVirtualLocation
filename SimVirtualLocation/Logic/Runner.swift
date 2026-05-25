@@ -195,7 +195,7 @@ class Runner {
         let task = Process()
         task.executableURL = URL(string: "file://\(path)")!
         task.arguments = args
-        
+        print(args)
         return task
     }
 }

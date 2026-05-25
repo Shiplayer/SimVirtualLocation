@@ -96,12 +96,113 @@ struct LocationSettingsPanel: View {
             Spacer()
 
             GroupBox {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Избранные маршруты")
+                        .font(.headline)
+                        .padding(.bottom, 4)
+                    
+                    if locationController.favoriteRoutes.isEmpty {
+                        Text("Нет сохраненных маршрутов")
+                            .foregroundColor(.secondary)
+                            .font(.caption)
+                    } else {
+                        ForEach(Array(locationController.favoriteRoutes.enumerated()), id: \.offset) { index, route in
+                            HStack {
+                                Text(route.name)
+                                    .font(.caption)
+                                    .lineLimit(1)
+                                
+                                Spacer()
+                                
+                                Button("Загрузить") {
+                                    locationController.loadFavoriteRoute(at: index)
+                                }
+                                .buttonStyle(.borderless)
+                                .font(.caption)
+                                
+                                Button("Удалить") {
+                                    locationController.removeFavoriteRoute(at: index)
+                                }
+                                .buttonStyle(.borderless)
+                                .foregroundColor(.red)
+                                .font(.caption)
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
+                    
+                    if locationController.canSaveCurrentRoute {
+                        Button("Сохранить текущий маршрут") {
+                            locationController.showSaveRouteDialog = true
+                        }
+                        .buttonStyle(.borderless)
+                        .font(.caption)
+                        .padding(.top, 4)
+                    }
+                }
+            }
+            
+            GroupBox {
                 Button(action: {
                     locationController.reset()
                 }, label: {
                     Text("Reset").frame(maxWidth: .infinity)
                 })
             }
+        }
+        .sheet(isPresented: $locationController.showSaveRouteDialog) {
+            SaveRouteDialog()
+                .environmentObject(locationController)
+        }
+    }
+}
+
+struct SaveRouteDialog: View {
+    @EnvironmentObject var locationController: LocationController
+    @State private var routeName: String = ""
+    @Environment(\.presentationMode) var presentationMode
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Сохранить маршрут")
+                .font(.headline)
+            
+            TextField("Название маршрута", text: $routeName)
+                .textFieldStyle(.roundedBorder)
+            
+            HStack(spacing: 20) {
+                Button("Отмена") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+                .buttonStyle(.bordered)
+                
+                buttonStyle
+            }
+        }
+        .padding()
+        .frame(width: 300)
+    }
+    
+    @ViewBuilder
+    private var buttonStyle: some View {
+        if #available(macOS 12.0, *) {
+            Button("Сохранить") {
+                if !routeName.isEmpty {
+                    locationController.saveCurrentRoute(name: routeName)
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(routeName.isEmpty)
+        } else {
+            Button("Сохранить") {
+                if !routeName.isEmpty {
+                    locationController.saveCurrentRoute(name: routeName)
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
+            .buttonStyle(.bordered)
+            .disabled(routeName.isEmpty)
         }
     }
 }

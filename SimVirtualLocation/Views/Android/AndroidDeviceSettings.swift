@@ -13,6 +13,11 @@ struct AndroidDeviceSettings: View {
     var body: some View {
         GroupBox {
             TextField("ADB path", text: $locationController.adbPath)
+          Button(action: {
+            locationController.selectADB()
+          }, label: {
+            Text("Select ADB").frame(maxWidth: .infinity)
+          })
             TextField("Device ID", text: $locationController.adbDeviceId)
             Toggle("Is emulator", isOn: $locationController.isEmulator)
             

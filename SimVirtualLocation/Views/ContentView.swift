@@ -54,26 +54,28 @@ struct ContentView: View {
                 }.padding()
             }
 
-            VStack {
-                Picker("Device mode", selection: $locationController.deviceType) {
-                    Text("iOS").tag(0)
-                    Text("Android").tag(1)
-                    Text("Scoket").tag(2)
-                }.labelsHidden().pickerStyle(.segmented)
-                
-                if locationController.deviceType == 0 {
-                    iOSPanel()
-                        .environmentObject(locationController)
-                } else if locationController.deviceType == 1 {
-                    AndroidPanel()
-                        .environmentObject(locationController)
-                } else {
-                    SocketPanel()
-                        .environmentObject(locationController)
-                }
-                
-            }.frame(width: 250)
-                .padding()
+            ScrollView {
+                VStack {
+                    Picker("Device mode", selection: $locationController.deviceType) {
+                        Text("iOS").tag(0)
+                        Text("Android").tag(1)
+                        Text("Scoket").tag(2)
+                    }.labelsHidden().pickerStyle(.segmented)
+                    
+                    if locationController.deviceType == 0 {
+                        iOSPanel()
+                            .environmentObject(locationController)
+                    } else if locationController.deviceType == 1 {
+                        AndroidPanel()
+                            .environmentObject(locationController)
+                    } else {
+                        SocketPanel()
+                            .environmentObject(locationController)
+                    }
+                    
+                }.frame(width: 250)
+                    .padding()
+            }
             
         }.frame(minWidth: 750, minHeight: 500)
             .onAppear {

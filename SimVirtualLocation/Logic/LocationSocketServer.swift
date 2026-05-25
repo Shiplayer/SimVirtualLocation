@@ -110,11 +110,11 @@ class LocationSocketServer : NSObject, ObservableObject {
     }
     
     func connectDevice() {
-        let deviceApi = Int(self.locationController.runShellCommand("adb shell getprop ro.build.version.sdk") ?? "0") ?? 31
+        let deviceApi = 30
         let killArgs = ["shell", "am", "force-stop", "com.devnex.simvirtuallocation"]
         self.locationController.executeAdbCommand(args: killArgs, successMessage: "App killed")
         if let address = locationController.getIPAddress() {
-            print("try to connect device by ip \(address)")
+            print("try to connect device by ip \(address) with \(deviceApi)")
             let service = deviceApi > 25 ? "start-foreground-service" : "startservice"
             let args = ["shell", "am", service, "-n", "com.devnex.simvirtuallocation/.LocationSocketService", "--es", "host", "\(address):\(port)"]
             self.locationController.executeAdbCommand(args: args, successMessage: "Complete")
@@ -122,7 +122,7 @@ class LocationSocketServer : NSObject, ObservableObject {
     }
     
     func installMockApp() {
-        let apkPath = Bundle.main.url(forResource: "SimVirtualLocationWithSocket", withExtension: "apk")!.path
+        let apkPath = Bundle.main.url(forResource: "helper-app", withExtension: "apk")!.path
         let args = ["install", "-r", "-g", apkPath]
         locationController.executeAdbCommand(args: args, successMessage: "Mock Location App installed")
     }

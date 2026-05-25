@@ -10,7 +10,8 @@
 		D20C83672AAB86A700CF8C1F /* LocationSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D20C83662AAB86A700CF8C1F /* LocationSocketServer.swift */; };
 		D20C83692AABD1D500CF8C1F /* SocketPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D20C83682AABD1D500CF8C1F /* SocketPanel.swift */; };
 		D20C836B2AABD26A00CF8C1F /* SocketPanelSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D20C836A2AABD26A00CF8C1F /* SocketPanelSettings.swift */; };
-		D289A85C2ACB16EB002A41B6 /* SimVirtualLocationWithSocket.apk in Resources */ = {isa = PBXBuildFile; fileRef = D289A85B2ACB16EB002A41B6 /* SimVirtualLocationWithSocket.apk */; };
+		D25E0E522BA1D5DC00141FB2 /* helper-app.apk in Resources */ = {isa = PBXBuildFile; fileRef = D25E0E512BA1D5DC00141FB2 /* helper-app.apk */; };
+		D2AFB3CB2E6EE8490099742F /* FavoriteRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2AFB3CA2E6EE8490099742F /* FavoriteRoute.swift */; };
 		D2ED47042AB28A58006C9A95 /* adb-join-wifi.apk in Resources */ = {isa = PBXBuildFile; fileRef = D2ED47032AB28A58006C9A95 /* adb-join-wifi.apk */; };
 		D2ED47062AB3108C006C9A95 /* WifiPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2ED47052AB3108C006C9A95 /* WifiPanel.swift */; };
 		D2ED470C2AB311D0006C9A95 /* WifiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2ED470B2AB311D0006C9A95 /* WifiController.swift */; };
@@ -37,7 +38,9 @@
 		D20C83662AAB86A700CF8C1F /* LocationSocketServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSocketServer.swift; sourceTree = "<group>"; };
 		D20C83682AABD1D500CF8C1F /* SocketPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketPanel.swift; sourceTree = "<group>"; };
 		D20C836A2AABD26A00CF8C1F /* SocketPanelSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketPanelSettings.swift; sourceTree = "<group>"; };
-		D289A85B2ACB16EB002A41B6 /* SimVirtualLocationWithSocket.apk */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimVirtualLocationWithSocket.apk; sourceTree = "<group>"; };
+		D25E0E502BA1D17D00141FB2 /* SimVirtualLocationRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SimVirtualLocationRelease.entitlements; sourceTree = "<group>"; };
+		D25E0E512BA1D5DC00141FB2 /* helper-app.apk */ = {isa = PBXFileReference; lastKnownFileType = file; path = "helper-app.apk"; sourceTree = "<group>"; };
+		D2AFB3CA2E6EE8490099742F /* FavoriteRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteRoute.swift; sourceTree = "<group>"; };
 		D2ED47032AB28A58006C9A95 /* adb-join-wifi.apk */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adb-join-wifi.apk"; sourceTree = "<group>"; };
 		D2ED47052AB3108C006C9A95 /* WifiPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WifiPanel.swift; path = Socket/WifiPanel.swift; sourceTree = "<group>"; };
 		D2ED470B2AB311D0006C9A95 /* WifiController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiController.swift; sourceTree = "<group>"; };
@@ -130,6 +133,7 @@
 		ED5EB089280DE407004D3559 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				D2AFB3CA2E6EE8490099742F /* FavoriteRoute.swift */,
 				ED76C13727C1606E00E74500 /* Simulator.swift */,
 				ED66969927C3E388007CC068 /* Device.swift */,
 				EDB5434828154ACE002182FF /* Track.swift */,
@@ -156,6 +160,8 @@
 		ED87CA1A27B1B42F001315D7 /* SimVirtualLocation */ = {
 			isa = PBXGroup;
 			children = (
+				D25E0E512BA1D5DC00141FB2 /* helper-app.apk */,
+				D25E0E502BA1D17D00141FB2 /* SimVirtualLocationRelease.entitlements */,
 				ED5EB089280DE407004D3559 /* Models */,
 				ED5EB088280DE370004D3559 /* Logic */,
 				ED5EB085280DE339004D3559 /* Views */,
@@ -163,7 +169,6 @@
 				ED87CA1F27B1B42F001315D7 /* Assets.xcassets */,
 				ED44823527B2590400C416C9 /* Info.plist */,
 				ED36B8E027CD5ABD00B2B9B2 /* idevicelocation */,
-				D289A85B2ACB16EB002A41B6 /* SimVirtualLocationWithSocket.apk */,
 				D2ED47032AB28A58006C9A95 /* adb-join-wifi.apk */,
 			);
 			path = SimVirtualLocation;
@@ -227,7 +232,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D289A85C2ACB16EB002A41B6 /* SimVirtualLocationWithSocket.apk in Resources */,
+				D25E0E522BA1D5DC00141FB2 /* helper-app.apk in Resources */,
 				ED36B8E127CD5ABD00B2B9B2 /* idevicelocation in Resources */,
 				ED44823627B2590400C416C9 /* Info.plist in Resources */,
 				ED87CA2027B1B42F001315D7 /* Assets.xcassets in Resources */,
@@ -255,6 +260,7 @@
 				ED5EB080280DE195004D3559 /* AndroidPanel.swift in Sources */,
 				ED5EB07E280DDDBD004D3559 /* iOSPanel.swift in Sources */,
 				ED5EB084280DE263004D3559 /* LocationSettingsPanel.swift in Sources */,
+				D2AFB3CB2E6EE8490099742F /* FavoriteRoute.swift in Sources */,
 				ED82D39027C1FC4D0093656B /* ContentView.swift in Sources */,
 				ED66969A27C3E388007CC068 /* Device.swift in Sources */,
 				EDB5434928154ACE002182FF /* Track.swift in Sources */,
@@ -389,6 +395,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SimVirtualLocation/SimVirtualLocation.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -416,8 +423,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SimVirtualLocation/SimVirtualLocation.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SimVirtualLocation/SimVirtualLocationRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
